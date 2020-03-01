@@ -4,6 +4,10 @@ import numpy as np
 import math
 import time
 
+minarea = 500
+maxarea = 1000
+
+
 def get_countour_area(contour):
     global minarea
     global maxarea
@@ -49,9 +53,6 @@ def clean_and_save_words(data, total_frame, height, width):
     cv2.destroyAllWindows()
 
 def main():
-    minarea = 500
-    maxarea = 1000
-
     cap = cv2.VideoCapture(0)
     fgbg = cv2.createBackgroundSubtractorMOG2(detectShadows = False)
 
@@ -201,3 +202,5 @@ def main():
     cap.release()
     cv2.destroyAllWindows()
     clean_and_save_words(data_points, total_frame, height, width)
+
+main()
