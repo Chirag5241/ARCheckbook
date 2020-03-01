@@ -1,7 +1,7 @@
 import os, io, sys
 from google.cloud import vision
 from google.cloud.vision import types
-import pandas as pd 
+import pandas as pd
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '~/($find ARCheckbook)/ServiceAccountToken.json'
 
@@ -29,8 +29,16 @@ def detectText(img):
 
 #FILE_NAME = sys.argv[1]
 #FOLDER_PATH = r'C:\Users\Dinesh\VisionAPIDemo\pics'
+<<<<<<< HEAD
 output = detectText("written_words.jpg")
 a = str(output['description'].array[0])
 
 def word():
     return(a)
+=======
+output = detectText("hey4.jpg")
+print(output['description'].array[0])
+def check_info():
+    a = str(output['description'].array[0])
+    return (a)
+>>>>>>> d33df0e35a5e85ec74c86a08d969ee02edcd4b08
