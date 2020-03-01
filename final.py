@@ -1,4 +1,6 @@
 from check import get_check
+import multiword 
+#import test
 import cv2
 import time
 import numpy as np
@@ -19,38 +21,50 @@ def money_keyboard():
 	money = input("Enter the amount : ") 
 	return(money)
 
-cap = cv2.VideoCapture(0)
+def get_name():
+	k_enable = multiword.main()
+	if k_enable == 1:
+		name = name_keyboard()
+		return
+	name = test.word()
+	return
 
-k_enable = 0
+get_name()
 
-while True:
 
-	ret, frame = cap.read()  
-	if ret == True:
+# cap = cv2.VideoCapture(0)
 
-		cv2.putText(frame, "Please Draw Your Name :",(10,70), cv2.FONT_HERSHEY_TRIPLEX, 2, (255, 0, 100), 4)
-		cv2.putText(frame, "Press k to move to keyboard :",(10,675), cv2.FONT_HERSHEY_TRIPLEX, 1, (100, 0, 255), 2)
-		cv2.putText(frame, "Press q to quit :",(10,700), cv2.FONT_HERSHEY_TRIPLEX, 1, (100, 0, 255), 2)
-		pts = np.array([[1100,600],[1250,600],[1250,700],[1100,700]], np.int32)
-		cv2.fillPoly(frame, np.int_([pts]), (0, 0, 10))
-		cv2.imshow('LIVE FEED',frame) 
+# k_enable = 0
 
-		if cv2.waitKey(1) & 0xFF == ord('k'):
-			k_enable = 1
-			break
+# while True:
+
+# 	ret, frame = cap.read()  
+# 	if ret == True:
+
+# 		# cv2.putText(frame, "Please Draw Your Name :",(10,70), cv2.FONT_HERSHEY_TRIPLEX, 2, (255, 0, 100), 4)
+# 		# cv2.putText(frame, "Press k to move to keyboard :",(10,675), cv2.FONT_HERSHEY_TRIPLEX, 1, (100, 0, 255), 2)
+# 		# cv2.putText(frame, "Press q to quit :",(10,700), cv2.FONT_HERSHEY_TRIPLEX, 1, (100, 0, 255), 2)
+# 		# pts = np.array([[1100,600],[1250,600],[1250,700],[1100,700]], np.int32)
+# 		# cv2.fillPoly(frame, np.int_([pts]), (0, 0, 10))
+# 		# cv2.putText(frame, "Done",(1132,653), cv2.FONT_HERSHEY_TRIPLEX, 1, (255, 255, 255), 2)
+# 		# cv2.imshow('LIVE FEED',frame) 
+
+# 		draw()
+
+# 		if cv2.waitKey(1) & 0xFF == ord('k'):
+# 			k_enable = 1
+# 			break
 		
-		if cv2.waitKey(1) & 0xFF == ord('q'):
-			break
-	else :
-		break
+# 		if cv2.waitKey(1) & 0xFF == ord('q'):
+# 			break
+# 	else :
+# 		break
 
 
-cv2.destroyAllWindows()
-cv2.waitKey(1)
-cap.release()
+# cv2.destroyAllWindows()
+# cv2.waitKey(1)
+# cap.release()
 
-if k_enable == 1:
-	name = name_keyboard()
 
 description = description_keyboard()
 money = money_keyboard()

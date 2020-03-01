@@ -4,6 +4,10 @@ import numpy as np
 import math
 import time
 
+minarea = 500
+maxarea = 1000
+
+
 def get_countour_area(contour):
     global minarea
     global maxarea
@@ -48,10 +52,9 @@ def clean_and_save_words(data, total_frame, height, width):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-def draw():
-    minarea = 500
-    maxarea = 1000
 
+def main():
+    k_enable = 0
     cap = cv2.VideoCapture(0)
     fgbg = cv2.createBackgroundSubtractorMOG2(detectShadows = False)
 
@@ -192,12 +195,18 @@ def draw():
             # cv2.imshow('img', frame)
             # cv2.imshow('mask', green_mask)
             # cv2.imshow('bmast', blue_mask)
+            if cv2.waitKey(1) & 0xFF == ord('k'):
+                k_enable = 1
+                break
             if cv2.waitKey(25) & 0xFF == ord('q'):
                 break
         else:
             break
 
-
+    cv2.destroyAllWindows()   
+    cv2.waitKey(1)
     cap.release()
-    cv2.destroyAllWindows()
-    clean_and_save_words(data_points, total_frame, height, width)
+    if k_enable == 0:
+        clean_and_save_words(data_points, total_frame, height, width)
+
+    return(k_enable)
