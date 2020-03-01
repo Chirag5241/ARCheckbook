@@ -24,7 +24,7 @@ def detectText(client, img):
     return df
 
 def main():
-    # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '~/($find ARCheckbook)/ServiceAccountToken.json'
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'ServiceAccountToken.json'
 
     client = vision.ImageAnnotatorClient()
 

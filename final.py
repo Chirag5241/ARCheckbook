@@ -15,7 +15,7 @@ def run_check_demo():
 			print(name)
 			error = 0
 		except:
-			print("Try again")
+			error = 1
 
 	error = 1
 	while error:
@@ -25,7 +25,7 @@ def run_check_demo():
 			print(memo)
 			error = 0
 		except:
-			print("Try again")
+			error = 1
 
 	error = 1
 	while error:
@@ -35,11 +35,11 @@ def run_check_demo():
 			print(amount)
 			error = 0
 		except:
-			print("Try again")
+			error = 1
 
 	get_check(name, memo, amount)
 
-	filled_check = cv2.imread('written_words.jpg')
+	filled_check = cv2.imread('filled_check.png')
 	cv2.imshow('check', filled_check)
 	cv2.waitKey(0)
 	cv2.destroyAllWindows()

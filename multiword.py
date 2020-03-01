@@ -58,13 +58,13 @@ def main(img_src, img_text):
     cap = cv2.VideoCapture(0)
     fgbg = cv2.createBackgroundSubtractorMOG2(detectShadows = False)
 
-    sensitivity = 20
+    sensitivity = 15
 
-    green_lower_bound = np.array([60 - sensitivity, 100, 50])
-    green_upper_bound = np.array([60 + sensitivity, 255, 255])
+    green_lower_bound = np.array([45, 90, 50])
+    green_upper_bound = np.array([85, 255, 255])
 
-    blue_lower_bound = np.array([120 - sensitivity, 100, 50])
-    blue_upper_bound = np.array([120 + sensitivity, 255, 255])
+    blue_lower_bound = np.array([110, 80, 50])
+    blue_upper_bound = np.array([130 + sensitivity, 255, 255])
 
     if(cap.isOpened() == False):
     	print('Error opening video stream or file')
@@ -196,7 +196,7 @@ def main(img_src, img_text):
 
             # cv2.imshow('img', frame)
             cv2.imshow('mask', green_mask)
-            # cv2.imshow('bmast', blue_mask)
+            cv2.imshow('bmast', blue_mask)
             if cv2.waitKey(1) & 0xFF == ord('k'):
                 k_enable = 1
                 break
