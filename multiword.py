@@ -34,26 +34,26 @@ def imgtoblob(mask_img):
 
     return(dilation)
 
-def clean_and_save_words(data, total_frame, height, width):
+def clean_and_save_words(data, total_frame, height, width, img_src):
     img = np.ones((height, width))
 
     for word in data:
         for i in range(len(word) - 1):
             if euclidean_dist(*word[i], *word[i-1]) < 40:
                 img = cv2.line(img, word[i], word[i+1], 0, 6)
-    if len(sys.argv) == 2:
+    if img_src:
         img = np.array(img, dtype = np.uint8)
-        orig_img = cv2.imread(sys.argv[1])
+        orig_img = cv2.imread(img_src)
         img = cv2.bitwise_and(orig_img, orig_img, mask = img)
     else:
         img = img * 255
     cv2.imwrite('written_words.jpg', img)
-    cv2.imshow('written_words', img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # cv2.imshow('written_words', img)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
 
 
-def main():
+def main(img_src, img_text):
     k_enable = 0
     cap = cv2.VideoCapture(0)
     fgbg = cv2.createBackgroundSubtractorMOG2(detectShadows = False)
@@ -87,13 +87,15 @@ def main():
     start_time = time.time()
     radius = 75
     tracked_frame = []
-    history = 3
-    if len(sys.argv) == 2:
-        total_frame = cv2.imread(sys.argv[1])
+    history = 7
+    if img_src:
+        total_frame = cv2.imread(img_src)
         height, width = total_frame.shape[:-1]
     else:
         height, width = 800, 1000
         total_frame = np.ones(shape = (height, width, 3))
+        total_frame = cv2.putText(total_frame, img_text, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,0), 2)
+        total_frame = cv2.putText(total_frame, "DONE", (450, 750), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 2)
     saved_frame = np.copy(total_frame)
     while(cap.isOpened()):
         ret, frame = cap.read()
@@ -193,7 +195,7 @@ def main():
                 # cv2.drawMarker(frame, (int(blue_cx), int(blue_cy)), (0, 255, 0), cv2.Mcheck_hARKER_STAR, markerSize=4, thickness=4, line_type=cv2.LINE_AA)
 
             # cv2.imshow('img', frame)
-            # cv2.imshow('mask', green_mask)
+            cv2.imshow('mask', green_mask)
             # cv2.imshow('bmast', blue_mask)
             if cv2.waitKey(1) & 0xFF == ord('k'):
                 k_enable = 1
@@ -203,10 +205,9 @@ def main():
         else:
             break
 
-    cv2.destroyAllWindows()   
+    cv2.destroyAllWindows()
     cv2.waitKey(1)
     cap.release()
     if k_enable == 0:
-        clean_and_save_words(data_points, total_frame, height, width)
-
+        clean_and_save_words(data_points, total_frame, height, width, img_src)
     return(k_enable)

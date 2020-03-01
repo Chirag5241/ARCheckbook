@@ -3,11 +3,7 @@ from google.cloud import vision
 from google.cloud.vision import types
 import pandas as pd
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '~/($find ARCheckbook)/ServiceAccountToken.json'
-
-client = vision.ImageAnnotatorClient()
-
-def detectText(img):
+def detectText(client, img):
 
     with io.open(img, 'rb') as image_file:
         content = image_file.read()
@@ -25,20 +21,13 @@ def detectText(img):
                     ),
                 ignore_index=True
             )
-        return df
+    return df
 
-#FILE_NAME = sys.argv[1]
-#FOLDER_PATH = r'C:\Users\Dinesh\VisionAPIDemo\pics'
-<<<<<<< HEAD
-output = detectText("written_words.jpg")
-a = str(output['description'].array[0])
+def main():
+    # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '~/($find ARCheckbook)/ServiceAccountToken.json'
 
-def word():
-    return(a)
-=======
-output = detectText("hey4.jpg")
-print(output['description'].array[0])
-def check_info():
+    client = vision.ImageAnnotatorClient()
+
+    output = detectText(client, "written_words.jpg")
     a = str(output['description'].array[0])
-    return (a)
->>>>>>> d33df0e35a5e85ec74c86a08d969ee02edcd4b08
+    return a.replace("\n", " ")

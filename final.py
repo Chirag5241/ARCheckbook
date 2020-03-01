@@ -1,85 +1,61 @@
 from check import get_check
-import multiword 
-#import test
+import multiword
+import test
 import cv2
 import time
+import os
 import numpy as np
 
-name = "None"
-description = "None"
-money = 1
-def name_keyboard():
-	name = input("Enter your name : ") 
-	return(name)
+def run_check_demo():
+	error = 1
+	while error:
+		try:
+			multiword.main("", "Recipient Name: ")
+			name = test.main()
+			print(name)
+			error = 0
+		except:
+			print("Try again")
 
-def description_keyboard():
-	description = input("Enter the description : ") 
-	return(description)
+	error = 1
+	while error:
+		try:
+			multiword.main("", "Memo Line: ")
+			memo = test.main()
+			print(memo)
+			error = 0
+		except:
+			print("Try again")
 
+	error = 1
+	while error:
+		try:
+			multiword.main("", "Amount of Money: ")
+			amount = int(test.main())
+			print(amount)
+			error = 0
+		except:
+			print("Try again")
 
-def money_keyboard():
-	money = input("Enter the amount : ") 
-	return(money)
+	get_check(name, memo, amount)
 
-def get_name():
-	k_enable = multiword.main()
-	if k_enable == 1:
-		name = name_keyboard()
-		return
-	name = test.word()
-	return
+	filled_check = cv2.imread('written_words.jpg')
+	cv2.imshow('check', filled_check)
+	cv2.waitKey(0)
+	cv2.destroyAllWindows()
 
-get_name()
+def run_sign_demo():
+	multiword.main("img.jpg", "")
+	filled_check = cv2.imread('written_words.jpg')
 
+	cv2.imshow('check', filled_check)
+	cv2.waitKey(0)
+	cv2.destroyAllWindows()
 
-# cap = cv2.VideoCapture(0)
+def run_draw_demo():
+	multiword.main("", "Draw Anything:")
+	drawn_img = cv2.imread('written_words.jpg')
 
-# k_enable = 0
-
-# while True:
-
-# 	ret, frame = cap.read()  
-# 	if ret == True:
-
-# 		# cv2.putText(frame, "Please Draw Your Name :",(10,70), cv2.FONT_HERSHEY_TRIPLEX, 2, (255, 0, 100), 4)
-# 		# cv2.putText(frame, "Press k to move to keyboard :",(10,675), cv2.FONT_HERSHEY_TRIPLEX, 1, (100, 0, 255), 2)
-# 		# cv2.putText(frame, "Press q to quit :",(10,700), cv2.FONT_HERSHEY_TRIPLEX, 1, (100, 0, 255), 2)
-# 		# pts = np.array([[1100,600],[1250,600],[1250,700],[1100,700]], np.int32)
-# 		# cv2.fillPoly(frame, np.int_([pts]), (0, 0, 10))
-# 		# cv2.putText(frame, "Done",(1132,653), cv2.FONT_HERSHEY_TRIPLEX, 1, (255, 255, 255), 2)
-# 		# cv2.imshow('LIVE FEED',frame) 
-
-# 		draw()
-
-# 		if cv2.waitKey(1) & 0xFF == ord('k'):
-# 			k_enable = 1
-# 			break
-		
-# 		if cv2.waitKey(1) & 0xFF == ord('q'):
-# 			break
-# 	else :
-# 		break
-
-
-# cv2.destroyAllWindows()
-# cv2.waitKey(1)
-# cap.release()
-
-
-description = description_keyboard()
-money = money_keyboard()
-
-print (name) 
-print (description) 
-print (money) 
-print("Preparing Check")
-get_check(name,description,money)
-
-
-img = cv2.imread('image.png')#jpg
-cv2.imshow('Check',img)
-while cv2.waitKey(1) & 0xFF != ord('q'):
-	continue
-cv2.destroyAllWindows()
-
-
+	cv2.imshow('check', drawn_img)
+	cv2.waitKey(0)
+	cv2.destroyAllWindows()
