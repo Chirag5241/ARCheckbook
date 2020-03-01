@@ -38,7 +38,12 @@ def clean_and_save_words(data, total_frame):
         for i in range(len(word) - 1):
             if euclidean_dist(*word[i], *word[i-1]) < 40:
                 img = cv2.line(img, word[i], word[i+1], 0, 6)
-    img = img * 255
+    if len(sys.argv) == 2:
+        img = np.array(img, dtype = np.uint8)
+        orig_img = cv2.imread(sys.argv[1])
+        img = cv2.bitwise_and(orig_img, orig_img, mask = img)
+    else:
+        img = img * 255
     cv2.imwrite('written_words.jpg', img)
     cv2.imshow('written_words', img)
     cv2.waitKey(0)
@@ -46,7 +51,7 @@ def clean_and_save_words(data, total_frame):
 
 
 minarea = 500
-maxarea = 2000
+maxarea = 1000
 
 cap = cv2.VideoCapture(0)
 fgbg = cv2.createBackgroundSubtractorMOG2(detectShadows = False)
@@ -74,7 +79,6 @@ done_counter = 0
 
 data_points = []
 
-height, width = 800, 1000
 pen_down_counter = 0
 pen_up_counter = 0
 word = -1
@@ -82,7 +86,12 @@ start_time = time.time()
 radius = 75
 tracked_frame = []
 history = 3
-total_frame = np.ones(shape = (height, width, 3))
+if len(sys.argv) == 2:
+    total_frame = cv2.imread(sys.argv[1])
+    height, width = total_frame.shape[:-1]
+else:
+    height, width = 800, 1000
+    total_frame = np.ones(shape = (height, width, 3))
 saved_frame = np.copy(total_frame)
 while(cap.isOpened()):
     ret, frame = cap.read()
