@@ -48,7 +48,7 @@ def clean_and_save_words(data, total_frame, height, width):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-def main():
+def draw():
     minarea = 500
     maxarea = 1000
 
