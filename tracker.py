@@ -16,19 +16,34 @@ def euclidean_dist(x1, y1, x2, y2):
     return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
 
 def imgtoblob(mask_img):
-	erosion = cv2.erode(mask_img, kernel)
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (8, 8))
 
-	closing = cv2.morphologyEx(mask_img, cv2.MORPH_CLOSE, kernel)
-	#cv2.imshow("STEP 1", closing)
-	opening = cv2.morphologyEx(closing, cv2.MORPH_OPEN, kernel)
-	#cv2.imshow("STEP 2", opening)
-	dilation = cv2.dilate(opening, kernel, iterations = 3)
-	#cv2.imshow("STEP 3", dilation)
-	#retbins, bins = cv2.threshold(dilation, 220, 255, cv2.THRESH_BINARY)
+    erosion = cv2.erode(mask_img, kernel)
 
-	return(dilation)
+    closing = cv2.morphologyEx(mask_img, cv2.MORPH_CLOSE, kernel)
+    #cv2.imshow("STEP 1", closing)
+    opening = cv2.morphologyEx(closing, cv2.MORPH_OPEN, kernel)
+    #cv2.imshow("STEP 2", opening)
+    dilation = cv2.dilate(opening, kernel, iterations = 3)
+    #cv2.imshow("STEP 3", dilation)
+    #retbins, bins = cv2.threshold(dilation, 220, 255, cv2.THRESH_BINARY)
 
-kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (8, 8))
+    return(dilation)
+
+def clean_signature(data, marked_check):
+    global check_h, check_w
+    img = np.ones((check_h, check_w))
+
+    for i in range(len(data) - 1):
+        if euclidean_dist(*data[i], *data[i-1]) < 40:
+            img = cv2.line(img, data[i], data[i+1], 0, 6)
+    img = np.array(img, dtype = np.uint8)
+    img = cv2.bitwise_and(marked_check, marked_check, mask = img)
+    cv2.imshow('img', img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    return img
+
 
 minarea = 500
 maxarea = 2000
@@ -69,6 +84,7 @@ history = 3
 while(cap.isOpened()):
     ret, frame = cap.read()
     check_h, check_w = marked_check.shape[:-1]
+    print(check_h, check_w)
     cam_h, cam_w = frame.shape[:-1]
 
     if ret == True:
@@ -133,11 +149,11 @@ while(cap.isOpened()):
             if dist >= 50 and time.time():
                 done_counter = 0
                 marked_check = np.copy(saved_check)
-                data_writer.write("{} {}\n".format(int(green_cx), int(green_cy)))
-                cv2.drawMarker(marked_check, (int(check_w - check_w * green_cx / cam_w), int(check_h * green_cy / cam_h)), (0, 0, 0), cv2.MARKER_STAR, markerSize=2, thickness=4, line_type=cv2.LINE_AA)
+                data_writer.write("{} {}\n".format(int(check_w - check_w * green_cx / cam_w), int(check_h * green_cy / cam_h)))
+                cv2.drawMarker(marked_check, (int(check_w - check_w * green_cx / cam_w), int(check_h * green_cy / cam_h)), (0, 0, 0), cv2.MARKER_STAR, markerSize=2, thickness=1, line_type=cv2.LINE_AA)
                 cv2.imshow('Image', marked_check)
                 saved_check = np.copy(marked_check)
-                data_points.append((green_cx, green_cy))
+                data_points.append((int(check_w - check_w * green_cx / cam_w), int(check_h * green_cy / cam_h)))
 
             saw_green = green_history >= 5 #saw a green image for more than 5 frames
             saw_blue = blue_history >= 5 #saw a blue image for more than 5 frames
@@ -165,4 +181,5 @@ while(cap.isOpened()):
 
 cap.release()
 cv2.destroyAllWindows()
+marked_check = clean_signature(data_points, marked_check)
 cv2.imwrite('signed_check.jpg', marked_check)
